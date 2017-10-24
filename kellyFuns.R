@@ -9,6 +9,63 @@ calcProb <- function(df) {
   return(df)
 }
 
+kelly <- function(winP, winOdds) {
+  ((winP * winOdds) - 1) / (winOdds - 1) * 100
+}
+
+kellyLogUtil <- function(winP, drawP, loseP, winOdds) {
+  winP * log(100 + ((winOdds-1) * x)) + drawP * log(100) + loseP * log(100 - x) 
+}
+
+calcKelly <- function(df, fraction = 0.25, bankroll = 10, minBet = 0.01, round = c("floor", "ceiling")) {
+  
+  roundmethod <- match.arg(round)
+  
+  stakes <- lapply(unique(df$Match), function(y) {
+    ss <- df[df$Match==y,]
+    H.Odds = ss$H.Odds
+    X.Odds = ss$X.Odds
+    A.Odds = ss$A.Odds
+    H.P = ss$H.P
+    X.P = ss$X.P
+    A.P = ss$A.P
+    
+    home_kelly <- kelly(d$H.P, d$H.Odds)
+    draw_kelly <- kelly(d$X.P, d$X.Odds)
+    away_kelly <- kelly(d$A.P, d$A.Odds)
+    
+    home_stake <- home_kelly / 100 * fraction * bankroll
+    draw_stake <- draw_kelly / 100 * fraction * bankroll
+    away_stake <- away_kelly / 100 * fraction * bankroll
+    
+    data.frame(Match = y, H.Kelly = home_kelly, H.Stake = home_stake, X.Kelly = draw_kelly, X.Stake = draw_take, A.Kelly = away_kelly, A.Stake = away_stake)
+  }) %>%
+    plyr::rbind.fill()
+  
+  # round stake to unit
+  if(roundmethod == "floor") {
+    stakes$H.Stake <- minBet * floor(stakes$H.Stake / minBet)
+    stakes$X.Stake <- minBet * floor(stakes$X.Stake / minBet)
+    stakes$A.Stake <- minBet * floor(stakes$A.Stake / minBet)
+  } else {
+    stakes$H.Stake <- minBet * ceiling(stakes$H.Stake / minBet)
+    stakes$X.Stake <- minBet * ceiling(stakes$X.Stake / minBet)
+    stakes$A.Stake <- minBet * ceiling(stakes$A.Stake / minBet)
+  }
+  
+  # calculate expected profit
+  stakes$H.Exp.Profit <- round(stakes$H.Stake * (df$H.Odds - 1), 2)
+  stakes$X.Exp.Profit <- round(stakes$X.Stake * (df$X.Odds - 1), 2)
+  stakes$A.Exp.Profit <- round(stakes$A.Stake * (df$A.Odds - 1), 2)
+  
+  stakes$H.Odds <- df$H.Odds
+  stakes$X.Odds <- df$X.Odds
+  stakes$A.Odds <- df$A.Odds
+  
+  stakes %>%
+    select(Match, H.Odds, X.Odds, A.Odds, H.Kelly, D.Kelly, A.Kelly, H.Stake, D.Stake, A.Stake, H.Exp.Profit, D.Exp.Profit, A.Exp.Profit)
+}
+
 calcKellyDNB <- function(df, fraction = 0.25, bankroll = 10, minBet = 0.01, round = c("floor", "ceiling"), adjust = FALSE) {
   
   roundmethod <- match.arg(round)
@@ -127,7 +184,7 @@ validateKellyDNB <- function(bets, results = NULL) {
   }
  
   bets %>%
-    select(Match, Stake, Pick, Result, Profit)
+    select(Match, H.Odds, A.Odds, Pick, Result, Profit)
 }
 
 

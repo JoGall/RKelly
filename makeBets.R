@@ -33,7 +33,7 @@ bets <- odds %>%
 write.csv(bets, "bets.csv", na = "", row.names = FALSE)
 
 # manually add results to column in csv
-bets <- read.csv("bets.csv")
+bets <- read.csv("~/Desktop/bets.csv")
 
 # calculate total profit / loss
 validateKellyDNB(bets)
