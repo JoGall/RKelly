@@ -1,7 +1,7 @@
 RKelly
 =======
 
-Still in progress...
+**Still in progress...**
 
 Optimised betting for Draw No Bet markets using the log utility form of the Kelly criterion.
 
@@ -24,29 +24,7 @@ max [ .6 * ln(100 + .43x) + .2 * ln(100) + .2 * ln(100 - x)]
 Mostly conceived just to use the name `RKelly`.
 
 #### Install dependencies
-
-Requires an installation of [R](https://cran.r-project.org/mirrors.html) and [PostgreSQL](https://www.postgresql.org/download/), and R packages `dplyr` and [`quantmod`](https://github.com/joshuaulrich/quantmod) R package:
-```R
-require(dplyr)
-require(devtools)
-devtools::install_github("joshuaulrich/quantmod")
-```
-
-#### Set parameters in ./config.sh
-Set global parameters in './config.sh', including directory database parameters (host, user, database, password), start date to return stock data from, and a list of ticker [symbols](https://en.wikipedia.org/wiki/Ticker_symbol) you're interested in getting data for. See [`./R/build_my_symbols_ex.R`](https://github.com/JoGall/quantdb/blob/master/R/build_my_symbols_ex.R) script for an example of getting symbols using `quantmod` and [`my_symbols.txt`](https://github.com/JoGall/quantdb/blob/master/my_symbols.txt) for an example file.
-
-#### Initial database build using ./buildDB.sh
-After setting global parameters, build a new database (or overwrite an existing database) using:
-
-`./buildDB.sh`
-
-#### Update database using ./updateDB.sh
-Once a database has been created, you can update it using:
-
-`./updateDB.sh`
-
-This could be automated e.g. weekly with a [job scheduler](https://en.wikipedia.org/wiki/List_of_job_scheduler_software).
-
+...
 
 -----
 
