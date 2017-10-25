@@ -17,7 +17,7 @@ kellyLogUtil <- function(winP, drawP, loseP, winOdds) {
   winP * log(100 + ((winOdds-1) * x)) + drawP * log(100) + loseP * log(100 - x) 
 }
 
-calcKelly <- function(df, fraction = 0.25, bankroll = 10, minBet = 0.01, round = c("floor", "ceiling")) {
+calcKelly1X2 <- function(df, fraction = 0.25, bankroll = 10, minBet = 0.01, round = c("floor", "ceiling")) {
   
   roundmethod <- match.arg(round)
   
@@ -30,17 +30,20 @@ calcKelly <- function(df, fraction = 0.25, bankroll = 10, minBet = 0.01, round =
     X.P = ss$X.P
     A.P = ss$A.P
     
-    home_kelly <- kelly(d$H.P, d$H.Odds)
-    draw_kelly <- kelly(d$X.P, d$X.Odds)
-    away_kelly <- kelly(d$A.P, d$A.Odds)
+    home_kelly <- kelly(ss$H.P, ss$H.Odds)
+    draw_kelly <- kelly(ss$X.P, ss$X.Odds)
+    away_kelly <- kelly(ss$A.P, ss$A.Odds)
     
     home_stake <- home_kelly / 100 * fraction * bankroll
     draw_stake <- draw_kelly / 100 * fraction * bankroll
     away_stake <- away_kelly / 100 * fraction * bankroll
     
-    data.frame(Match = y, H.Kelly = home_kelly, H.Stake = home_stake, X.Kelly = draw_kelly, X.Stake = draw_take, A.Kelly = away_kelly, A.Stake = away_stake)
+    data.frame(Match = y, H.Kelly = home_kelly, H.Stake = home_stake, X.Kelly = draw_kelly, X.Stake = draw_stake, A.Kelly = away_kelly, A.Stake = away_stake)
   }) %>%
     plyr::rbind.fill()
+  
+  # best option by Kelly
+  ifelse(home)
   
   # round stake to unit
   if(roundmethod == "floor") {
@@ -63,7 +66,7 @@ calcKelly <- function(df, fraction = 0.25, bankroll = 10, minBet = 0.01, round =
   stakes$A.Odds <- df$A.Odds
   
   stakes %>%
-    select(Match, H.Odds, X.Odds, A.Odds, H.Kelly, D.Kelly, A.Kelly, H.Stake, D.Stake, A.Stake, H.Exp.Profit, D.Exp.Profit, A.Exp.Profit)
+    select(Match, H.Odds, X.Odds, A.Odds, H.Kelly, X.Kelly, A.Kelly, H.Stake, X.Stake, A.Stake, H.Exp.Profit, X.Exp.Profit, A.Exp.Profit)
 }
 
 calcKellyDNB <- function(df, fraction = 0.25, bankroll = 10, minBet = 0.01, round = c("floor", "ceiling"), adjust = FALSE) {
