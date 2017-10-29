@@ -11,29 +11,28 @@ urls <- c("http://sports.coral.co.uk/premier-league",
           "http://sports.coral.co.uk/football/france",
           "http://sports.coral.co.uk/football/netherlands")
 
+urls <- "http://sports.coral.co.uk/football"
 odds <- getOdds(urls)
 
 # set Kelly parameters
 bankroll = 10 #total amount to be wagered (£)
 kellyFraction = 0.25 #fraction of full Kelly to be used
-minBet = 0.05 #minimum betting unit, in £
+minKelly = 15 #minimum full Kelly % required to pick, in %
+minEdge = 1 #minimum difference between Home Kelly % and Away Kelly % required to pick
+minBet = 0.1 #minimum betting unit, in £
 roundMethod = "ceiling" #should suggested bets be
-minKelly = 10 #minimum full Kelly % required to pick, in %
-minEdge = 10 #minimum difference between Home Kelly % and Away Kelly % required to pick
-adjust = FALSE #should stakes be adjusted so that picks use total bankroll?
 
 # calculate Kelly stakes
-bets <- odds %>%
+picks <- odds %>%
   calcProb %>%
-  calcKellyDNB(kellyFraction, bankroll, minBet, roundMethod, adjust) %>%
-  pickKellyDNB(minKelly, minEdge) %>% 
-  adjustKelly(bankroll, minBet, roundMethod)
+  calcKellyDNB() %>%
+  calcStakeDNB(kellyFraction, bankroll, minKelly, minEdge, minBet, roundMethod)
 
-# write bets to csv
-write.csv(bets, "bets.csv", na = "", row.names = FALSE)
+# load results csv, e.g.
+results <- read.csv("~/Dropbox/github/RKelly/DATA/results/2017-10-28_results.csv")
 
-# manually add results to column in csv
-bets <- read.csv("~/Desktop/bets.csv")
+d <- left_join(picks, results, by = "Match")
 
 # calculate total profit / loss
-validateKellyDNB(bets)
+validateKellyDNB(d) # see returns for each pick
+validateKellyDNB(d, summarise = TRUE) #sum net return
