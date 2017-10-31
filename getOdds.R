@@ -1,5 +1,6 @@
 require(XML)
 require(RCurl)
+require(dplyr)
 
 urls <- c("http://sports.coral.co.uk/football/england/carabao-cup",
 "http://sports.coral.co.uk/football/spain/copa-del-rey",
@@ -10,6 +11,12 @@ urls <- c("http://sports.coral.co.uk/football/england/carabao-cup",
 "http://sports.coral.co.uk/football/netherlands/knvb-cup",
 "http://sports.coral.co.uk/football/european-a-z/portugal/liga-de-honra")
 
+URLs <- c("http://sports.coral.co.uk/football/uefa-club-comps/champions-league",
+          "http://sports.coral.co.uk/football/england/championship")
+
+# "http://sports.coral.co.uk/football/uefa-club-comps/europa-league"
+# "http://sports.coral.co.uk/football"
+          
 getOdds <- function(URLs, DNB = FALSE) {
   
   # get matches and H-X-A odds

@@ -11,7 +11,6 @@ urls <- c("http://sports.coral.co.uk/premier-league",
           "http://sports.coral.co.uk/football/france",
           "http://sports.coral.co.uk/football/netherlands")
 
-urls <- "http://sports.coral.co.uk/football"
 odds <- getOdds(urls)
 
 # set Kelly parameters
