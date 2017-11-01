@@ -28,10 +28,12 @@ picks <- odds %>%
   calcStakeDNB(kellyFraction, bankroll, minKelly, minEdge, minBet, roundMethod)
 
 # load results csv, e.g.
-results <- read.csv("~/Dropbox/github/RKelly/DATA/results/2017-10-28_results.csv")
+results <- read.csv("~/Dropbox/github/RKelly/DATA/results/2017-10-31_results.csv")
 
 d <- left_join(picks, results, by = "Match")
 
 # calculate total profit / loss
 validateKellyDNB(d) # see returns for each pick
 validateKellyDNB(d, summarise = TRUE) #sum net return
+
+validateKellyDNB(d, summarise = TRUE) / sum(d$Stake, na.rm=T) * 100
