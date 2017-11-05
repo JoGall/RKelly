@@ -2,16 +2,35 @@ source("~/Dropbox/github/RKelly/getOdds.R")
 source("~/Dropbox/github/RKelly/kellyFuns.R")
 
 # retrieve odds from Coral.co.uk
-urls <- c("http://sports.coral.co.uk/premier-league",
-          "http://sports.coral.co.uk/championship",
-          "http://sports.coral.co.uk/la-liga",
-          "http://sports.coral.co.uk/serie-a",
+# c("http://sports.coral.co.uk/football/england/carabao-cup",
+# "http://sports.coral.co.uk/football/spain/copa-del-rey",
+# "http://sports.coral.co.uk/football/scotland/ladbrokes-premiership",
+# "http://sports.coral.co.uk/football/italy/primavera-cup",
+# "http://sports.coral.co.uk/football/germany/dfb-pokal",
+# "http://sports.coral.co.uk/football/france/coupe-de-la-ligue",
+# "http://sports.coral.co.uk/football/netherlands/knvb-cup",
+# "http://sports.coral.co.uk/football/european-a-z/portugal/liga-de-honra")
+
+# Europe
+# c("http://sports.coral.co.uk/football/uefa-club-comps/champions-league",
+# "http://sports.coral.co.uk/football/uefa-club-comps/europa-league")
+
+# leagues
+urls <- c("http://sports.coral.co.uk/football/england/premier-league",
+          "http://sports.coral.co.uk/football/england/championship",
+          "http://sports.coral.co.uk/football/spain/la-liga",
           "http://sports.coral.co.uk/football/germany/bundesliga",
           "http://sports.coral.co.uk/football/scotland",
           "http://sports.coral.co.uk/football/france",
-          "http://sports.coral.co.uk/football/netherlands")
+          "http://sports.coral.co.uk/football/italy/serie-a",
+          "http://sports.coral.co.uk/football/netherlands",
+          "http://sports.coral.co.uk/football/european-a-z/portugal/primeira-liga")
 
-odds <- getOdds(urls)
+# get DNB odds for all matches played today
+odds2 <- getOdds1X2(urls, href = TRUE) %>%
+  filter(grepl("Today", KO)) %>%
+  getOddsDNB() %>%
+  na.omit
 
 # set Kelly parameters
 bankroll = 10 #total amount to be wagered (£)
